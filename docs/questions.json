@@ -1,0 +1,12 @@
+[
+  ["Which trucks left over their mass limit, and whose were they?", "overloads"],
+  ["How close is each site to its consent tonnes for the year?", "consent"],
+  ["Which royalty returns are owed, how much, and to whom?", "royalties"],
+  ["Which stockpiles are below the level we want on hand?", "stock"],
+  ["Which loads went out below the agreed or list price, and what did it cost us?", "price-check"],
+  ["Which trucks are running on a stored tare that is too old?", "tare-due"],
+  ["Which carriers load closest to their limit, and how often do they go over?", "carrier-loads"],
+  ["Which jobs are about to pass their quoted tonnes?", "job-progress"],
+  ["Which account loads have not been invoiced, oldest first?", "uninvoiced"],
+  ["What did each site sell yesterday, by product?", "day-sales --date=YYYY-MM-DD"]
+]

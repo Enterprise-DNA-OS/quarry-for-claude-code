@@ -1,11 +1,43 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
-    "file": "name",
+    "name": "weighbridge-ticket",
+    "title": "Weighbridge ticket",
+    "for_each": "select id,ticket_no from tickets where void_reason is null and weighed_at>=now()-interval '14 days' order by ticket_no",
+    "file": "ticket_no",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      { "title": "Load", "layout": "record", "sql": "select ticket_no,weighed_at,site,bridge,truck,carrier,customer,job,product from v_tickets where ticket_id=$1" },
+      { "title": "Weights", "layout": "record", "note": "Check the fields your trade measurement rules and your customers require on a ticket before using this as your weighbridge record.", "sql": "select gross_t gross_tonnes,tare_t tare_tonnes,net_t net_tonnes,case when stored_tare then 'stored tare' else 'weighed empty' end tare_method,max_gross_t truck_limit_tonnes from v_tickets where ticket_id=$1" },
+      { "title": "Charges", "layout": "record", "sql": "select price_per_t,cartage_per_t,value,case when cash then 'cash' else 'account' end payment,invoice_ref from v_tickets where ticket_id=$1" }
+    ]
+  },
+  {
+    "name": "customer-statement",
+    "title": "Loads to invoice",
+    "for_each": "select id,code from customers where account order by code",
+    "file": "code",
+    "sections": [
+      { "title": "Customer", "layout": "record", "sql": "select code,name,email,phone from customers where id=$1" },
+      { "title": "Loads not yet invoiced", "sql": "select ticket_no,day,job,product,net_t,price_per_t,cartage_per_t,value from v_tickets where customer_id=$1 and invoice_ref is null order by day,ticket_no" }
+    ]
+  },
+  {
+    "name": "royalty-summary",
+    "title": "Royalty summary",
+    "for_each": "select id,code from sites where royalty_per_t is not null order by code",
+    "file": "code",
+    "sections": [
+      { "title": "Site", "layout": "record", "sql": "select code,name,royalty_payee,royalty_per_t from sites where id=$1" },
+      { "title": "Months", "note": "Tonnes are from the weighbridge tickets. Check the rate against your royalty agreement.", "sql": "select period,tonnes,amount,due,lodged_on,ref from v_royalties where site_id=$1 order by period desc" }
+    ]
+  },
+  {
+    "name": "consent-report",
+    "title": "Consent tonnes report",
+    "for_each": "select id,code from sites order by code",
+    "file": "code",
+    "sections": [
+      { "title": "Site and consent", "layout": "record", "sql": "select site,consent_ref,year_start,consent_limit_t,dispatched_t,pct from v_consent where site_id=$1" },
+      { "title": "Tonnes by month", "sql": "select to_char(date_trunc('month',day),'YYYY-MM') as month,count(*) loads,sum(net_t) tonnes from v_tickets where site_id=$1 and day>=current_date-365 group by date_trunc('month',day) order by 1" }
     ]
   }
 ]

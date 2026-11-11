@@ -13,12 +13,13 @@ That layer used to be the whole product, because talking to a database was hard.
 
 ## What you give up
 
-- **A visual board.** Stages are a table you ask about, not cards you drag.
+- **The weighbridge screen.** The free version does not read the indicator, print at the gate or open the boom gate. Weights are entered or imported.
+- **Cameras, plate recognition and driver terminals.** None of that hardware connects to it out of the box.
 - **A phone app.** It runs where Claude Code runs.
 - **A vendor help desk.** This is open source. Enterprise DNA supports the installed version for businesses that want someone to call.
 
 ## Who this fits
 
-Small teams who already use Claude Code, or who would rather learn to ask than learn another interface. If your team needs a screen to look at all day, keep WinWeigh. If you need the answers more than the screens, this is cheaper, faster and yours.
+Small teams who already use Claude Code, or who would rather learn to ask than learn another interface. If your weighbridge operator needs a screen at the gate all day, keep that screen, or have Enterprise DNA build one on top of these records. If you need the answers more than the screens, this is cheaper, faster and yours.
 
 Installed and run for you: https://enterprisedna.co/omni/instead-of/winweigh

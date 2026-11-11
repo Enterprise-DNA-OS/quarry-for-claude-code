@@ -1,14 +1,32 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Quarry for Claude Code: what needs attention, rendered by npm run view",
+    "title": "The quarry week",
+    "subtitle": "What went over the bridge, open jobs and what needs chasing",
     "sections": [
-      {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
-      }
+      { "title": "Sales in the last 7 days", "sql": "select site,product,count(*) loads,sum(net_t) tonnes,sum(value) value from v_tickets where day>=current_date-7 group by site,product order by site,tonnes desc" },
+      { "title": "Open jobs", "sql": "select code,customer,name,product,quoted_t,delivered_t,remaining_t,pct,last_load,credit_hold from v_job_progress where status='open' order by pct desc nulls last,code" },
+      { "title": "Needs attention", "sql": "select kind,record,due,detail from v_attention order by due,kind,record" }
+    ]
+  },
+  {
+    "name": "compliance",
+    "title": "Quarry compliance",
+    "subtitle": "Consent tonnes, overloads, weighbridge tests, managers and royalties",
+    "sections": [
+      { "title": "Record checks", "note": "Each check and its source is listed in docs/compliance.md. The limits are house defaults: set yours.", "sql": "select rule,record,issue from v_compliance order by rule,record" },
+      { "title": "Consent tonnes this consent year", "sql": "select site,consent_ref,year_start,consent_limit_t,dispatched_t,pct from v_consent order by site" },
+      { "title": "Royalty returns", "sql": "select site,payee,period,tonnes,amount,due,lodged_on,ref from v_royalties order by period desc,site" },
+      { "title": "Weighbridges", "sql": "select b.code,s.code site,b.verification_mark,b.last_tested_on,b.last_tested_on+b.test_every_days next_test from weighbridges b join sites s on s.id=b.site_id order by b.code" }
+    ]
+  },
+  {
+    "name": "stock",
+    "title": "Stockpiles",
+    "subtitle": "Book stock from the last survey, production since and tonnes sold since",
+    "sections": [
+      { "title": "Book stock", "note": "Book stock is an estimate between surveys. The surveyor's figure resets it.", "sql": "select site,product,last_survey,survey_t,produced_t,sold_t,book_t,min_stock_t,low from v_stock_book order by site,product" },
+      { "title": "Sales in the last 30 days", "sql": "select site,product,count(*) loads,sum(net_t) tonnes,round(sum(value)/nullif(sum(net_t),0),2) avg_per_t from v_tickets where day>=current_date-30 group by site,product order by site,tonnes desc" }
     ]
   }
 ]
